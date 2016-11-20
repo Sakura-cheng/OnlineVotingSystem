@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2016-11-18 11:07:10
 # @Last Modified by:   wsljc
-# @Last Modified time: 2016-11-20 19:23:00
+# @Last Modified time: 2016-11-20 22:10:59
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, request, flash
 
@@ -16,10 +16,6 @@ from flask_login import login_required, login_user, logout_user, current_user
 def index():
 	votes = Vote.query.order_by(Vote.timestamp.desc()).all()
 	options = Option.query.all()
-	op = {}
-	if request.method == 'POST':
-		
-		return redirect(url_for('.index'))
 	return render_template('index.html', votes=votes, options=options)
 
 @main.route('/login', methods=['GET', 'POST'])
@@ -75,6 +71,7 @@ def new():
 				vote=Vote.query.filter_by(id=str(m)).first()
 				)
 			db.session.add(o)
+			db.session.delete(o)
 		return redirect(url_for('.index'))
 	return render_template('new.html', form=form)
 
@@ -83,6 +80,13 @@ def vote(votename):
 	vote=Vote.query.filter_by(name=votename).first()
 	options = Option.query.filter_by(vote_id=vote.id).all()
 	return render_template('vote.html', vote=vote, options=options)
+
+@main.route('/success/option/<op>')
+def success(op):
+	option=Option.query.filter_by(id=op).first()
+	m = option.id
+	db.session.execute('UPDATE options SET number = number+1 WHERE id = %d' % m)
+	return render_template('success.html')
 
 @main.route('/secret')
 @login_required

@@ -32,7 +32,6 @@
     <br>
     <br>
     <br>
-    <br>
     {% for message in get_flashed_messages() %}
     <div class="alert alert-warning">
     	<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -43,24 +42,10 @@
 	{% block page_content %}
 	<div class="col-md-2"></div>
 	<div class="col-md-8">
-	  <div class="list-group-item active">
-	  	<h4 name="name" class="list-group-item-heading">
-	  		{{ vote.name }}
-	  	</h4>
-	  </div>
-	  <div class="list-group-item">
-	  	<p class="list-group-item-text">
-	  		描述：{{ vote.description }}
-	  	</p>
-	  </div>
-	  {% for option in options %}
-	  {% if option.vote_id == vote.id %}
-	    <br>
-	  	<a href="{{ url_for('.success', op=option.id) }}" name="{{ option.id }}" type="button" class="list-group-item" type="submit">
-	  		·{{ option.content }}&nbsp;{{ option.number }}票
-	  	</a>
-	  {% endif %}
-	  {% endfor %}
+	<div class="page-header">
+	    <h1 class="text-center">投票成功！</h1>
+    </div>
+    <a href="{{ url_for('.index') }}" type="button" class="btn btn-primary btn-lg btn-block">点击返回</a>
 	</div>
 	{% endblock %}
 </div>
