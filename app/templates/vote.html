@@ -34,6 +34,9 @@
     <br>
     <br>
     <br>
+    <br>
+    <br>
+    <br>
     {% for message in get_flashed_messages() %}
     <div class="alert alert-warning">
     	<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -44,43 +47,24 @@
 	{% block page_content %}
 	<div class="col-md-2"></div>
 	<div class="col-md-8">
-	{% if current_user.is_authenticated %}
-	<div>
-		<a href="/new"><button type="button" class="btn btn-primary">新建投票</button></a>
-	</div>
-	<br>
-	{% endif %}
-	{% for vote in votes %}
-	<div class="list-group">
-	<a href="/vote/{{ vote.name }}" class="list-group-item active">
-		<h4 class="list-group-item-heading">
-			{{ vote.name }}
-		</h4>
-		{{ moment(vote.timestamp).fromNow() }}&nbsp;by&nbsp;{{ vote.user.username }}
-	</a>
-	<a href="/vote/{{ vote.name }}" class="list-group-item">
-		<p class="list-group-item-text">
-			描述：{{ vote.description }}
-		</p>
-	</a>
-	{% for option in options %}
-	{% if option.vote_id == vote.id %}
-	<a href="/vote/{{ vote.name }}" class="list-group-item">
-		<p class="list-group-item-text">
-			·{{ option.content }}&nbsp;<span></span>{{ option.number }}票
-		</p>
-		<div class="progress progress-striped active">
-	      <div class="progress-bar progress-bar-success" role="progressbar"
-		 aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
-		 style="width:{{ option.number }}%;">
-		    <span class="sr-only">40% 完成</span>
-	      </div>
-        </div>
-	</a>
-	{% endif %}
-	{% endfor %}
-    </div>
-	{% endfor %}
+	  <div class="list-group-item active">
+	  	<h4 name="name" class="list-group-item-heading">
+	  		{{ vote.name }}
+	  	</h4>
+	  </div>
+	  <div class="list-group-item">
+	  	<p class="list-group-item-text">
+	  		描述：{{ vote.description }}
+	  	</p>
+	  </div>
+	  {% for option in options %}
+	  {% if option.vote_id == vote.id %}
+	    <br>
+	  	<button name="{{ option.id }}" class="list-group-item" type="submit">
+	  		·{{ option.content }}&nbsp;{{ option.number }}票
+	  	</button>
+	  {% endif %}
+	  {% endfor %}
 	</div>
 	{% endblock %}
 </div>

@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2016-11-18 11:17:42
 # @Last Modified by:   wsljc
-# @Last Modified time: 2016-11-20 09:28:43
+# @Last Modified time: 2016-11-20 17:07:40
 import os
 from app import create_app, db
 from app.models import User, Vote, Option

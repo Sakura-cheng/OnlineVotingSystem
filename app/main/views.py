@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2016-11-18 11:07:10
 # @Last Modified by:   wsljc
-# @Last Modified time: 2016-11-20 12:01:19
+# @Last Modified time: 2016-11-20 19:23:00
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, request, flash
 
@@ -12,10 +12,14 @@ from .. import db
 from ..models import Vote, User, Option
 from flask_login import login_required, login_user, logout_user, current_user
 
-@main.route('/', methods=['GET'])
+@main.route('/', methods=['GET', 'POST'])
 def index():
 	votes = Vote.query.order_by(Vote.timestamp.desc()).all()
 	options = Option.query.all()
+	op = {}
+	if request.method == 'POST':
+		
+		return redirect(url_for('.index'))
 	return render_template('index.html', votes=votes, options=options)
 
 @main.route('/login', methods=['GET', 'POST'])
@@ -73,6 +77,12 @@ def new():
 			db.session.add(o)
 		return redirect(url_for('.index'))
 	return render_template('new.html', form=form)
+
+@main.route('/vote/<votename>')
+def vote(votename):
+	vote=Vote.query.filter_by(name=votename).first()
+	options = Option.query.filter_by(vote_id=vote.id).all()
+	return render_template('vote.html', vote=vote, options=options)
 
 @main.route('/secret')
 @login_required

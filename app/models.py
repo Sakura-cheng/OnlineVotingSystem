@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2016-11-18 11:17:01
 # @Last Modified by:   wsljc
-# @Last Modified time: 2016-11-20 09:27:31
+# @Last Modified time: 2016-11-20 17:07:07
 from . import db
 from flask_login import UserMixin
 from . import login_manager
@@ -41,6 +41,7 @@ class Option(db.Model):
 	__tablename__ = 'options'
 	id = db.Column(db.Integer, primary_key=True)
 	content = db.Column(db.String(64), nullable=False)
+	number = db.Column(db.Integer, default=0)
 	vote_id = db.Column(db.Integer, db.ForeignKey('votes.id'))
 
 @login_manager.user_loader
