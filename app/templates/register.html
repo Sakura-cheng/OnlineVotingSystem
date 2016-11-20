@@ -1,0 +1,39 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}在线投票系统{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-inverse" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">在线投票系统</a>
+    </div>
+    <ul class="nav navbar-nav navbar-left">
+    	<li><a href="/"><span class="glyphicon">首页</span></a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/"><span class="glyphicon  glyphicon glyphicon-chevron-left"></span>返回</a></li>
+    </ul>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	{% block page_content %}
+    <div class="page-header">
+      <h1 class="text-center">注册</h1>
+    </div>
+  {% endblock %}
+</div>
+<div class="col-md-4"></div>
+<div class="col-md-4">
+  {{ wtf.quick_form(form) }}
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}在线投票系统{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-inverse" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">在线投票系统</a>
+    </div>
+    <ul class="nav navbar-nav navbar-left">
+    	<li><a href="/"><span class="glyphicon">首页</span></a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/register"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
+      <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+    </ul>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+    	{{ message }}
+    </div>
+    {% endfor%}
+
+	{% block page_content %}{% endblock %}
+</div>
+{% endblock %}

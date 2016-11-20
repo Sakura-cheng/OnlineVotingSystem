@@ -1,0 +1,79 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}在线投票系统{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-inverse" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">在线投票系统</a>
+    </div>
+    <ul class="nav navbar-nav navbar-left">
+    	<li><a href="/"><span class="glyphicon">首页</span></a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+    {% if current_user.is_authenticated %}
+    <li><a href="/secret"><span class="glyphicon glyphicon-user"></span>个人中心</a></li>
+    <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>退出</a></li>
+    {% else %}
+      <li><a href="/register"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
+      <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+    {% endif %}
+    </ul>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+    	{{ message }}
+    </div>
+    {% endfor%}
+
+	{% block page_content %}
+	<div class="col-md-2"></div>
+	<div class="col-md-8">
+	{% if current_user.is_authenticated %}
+	<div>
+		<a href="/new"><button type="button" class="btn btn-primary">新建投票</button></a>
+	</div>
+	<br>
+	{% endif %}
+	{% for vote in votes %}
+	<div class="list-group">
+	<a href="#" class="list-group-item active">
+		<h4 class="list-group-item-heading">
+			{{ vote.name }}
+		</h4>
+		{{ moment(vote.timestamp).fromNow() }}&nbsp;by&nbsp;{{ vote.user.username }}
+	</a>
+	<a href="#" class="list-group-item">
+		<p class="list-group-item-text">
+			描述：{{ vote.description }}
+		</p>
+	</a>
+	{% for option in options %}
+	{% if option.vote_id == vote.id %}
+	<a href="#" class="list-group-item">
+		<p class="list-group-item-text">
+			·{{ option.content }}
+		</p>
+	</a>
+	{% endif %}
+	{% endfor %}
+    </div>
+	{% endfor %}
+	</div>
+	{% endblock %}
+</div>
+{% endblock %}
+
+<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js"></script>
