@@ -50,7 +50,7 @@
         <h4 name="name" class="list-group-item-heading">
             {{ vote.name }}
         </h4>
-        {{ moment(vote.timestamp).fromNow() }}&nbsp;by&nbsp;{{ vote.user.username }}&nbsp;共{{ total }}人投票
+        {{ moment(vote.timestamp).fromNow() }}&nbsp;by&nbsp;{{ vote.user.username }}&nbsp;共{{ total+1 }}人投票
       </div>
       <div class="list-group-item">
         <p class="list-group-item-text">
@@ -61,8 +61,14 @@
       {% if option.vote_id == vote.id %}
       <div class="list-group-item">
         <p class="list-group-item-text">
+        {% if option.id == m %}
             ·{{ option.content }}&nbsp;<span></span>{{ option.number+1 }}票
+        {% else %}
+            ·{{ option.content }}&nbsp;<span></span>{{ option.number }}票
+        {% endif %}
         </p>
+        {% if total != 0 %}
+        {% if option.id == m %}
         <div class="progress progress-striped active">
           <div class="progress-bar progress-bar-success" role="progressbar"
          aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
@@ -70,6 +76,24 @@
             <span class="sr-only">40% 完成</span>
           </div>
         </div>
+        {% else %}
+        <div class="progress progress-striped active">
+          <div class="progress-bar progress-bar-success" role="progressbar"
+         aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+         style="width:{{ (option.number)/total*100 }}%;">
+            <span class="sr-only">40% 完成</span>
+          </div>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="progress progress-striped active">
+          <div class="progress-bar progress-bar-success" role="progressbar"
+         aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+         style="width: 0%;">
+            <span class="sr-only">40% 完成</span>
+          </div>
+        </div>
+        {% endif %}
        </div>
       {% endif %}
       {% endfor %}

@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2016-11-18 11:07:10
 # @Last Modified by:   wsljc
-# @Last Modified time: 2016-11-21 20:22:04
+# @Last Modified time: 2016-11-21 21:58:29
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, request, flash
 
@@ -22,6 +22,7 @@ def index():
 		for option in vote.options:
 			n += option.number
 		total[vote.id] = n
+		n = 0
 	return render_template('index.html', votes=votes, options=options, total=total)
 
 @main.route('/login', methods=['GET', 'POST'])
@@ -77,7 +78,6 @@ def new():
 				vote=Vote.query.filter_by(id=str(m)).first()
 				)
 			db.session.add(o)
-			db.session.delete(o)
 		return redirect(url_for('.index'))
 	return render_template('new.html', form=form)
 
@@ -97,7 +97,7 @@ def success(op, voteid):
 	total = 0
 	for option in vote.options:
 		total += option.number
-	return render_template('success.html', vote=vote, options=options, total=total)
+	return render_template('success.html', vote=vote, m=m, options=options, total=total)
 
 @main.route('/secret')
 @login_required
