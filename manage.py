@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2016-11-18 11:17:42
 # @Last Modified by:   wsljc
-# @Last Modified time: 2016-11-20 22:36:57
+# @Last Modified time: 2016-11-21 19:04:17
 import os
 from app import create_app, db
 from app.models import User, Vote, Option
@@ -20,4 +20,4 @@ manager.add_command('db', MigrateCommand)
 
 if __name__ == '__main__':
 	#manager.run()
-	app.run(host='0.0.0.0', debug=True)
+	app.run(debug=True)

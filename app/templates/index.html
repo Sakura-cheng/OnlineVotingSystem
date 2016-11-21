@@ -51,19 +51,17 @@
 	{% block page_content %}
 	<div class="col-md-2"></div>
 	<div class="col-md-8">
-	{% if current_user.is_authenticated %}
 	<div>
 		<a href="/new"><button type="button" class="btn btn-primary">新建投票</button></a>
 	</div>
 	<br>
-	{% endif %}
 	{% for vote in votes %}
 	<div class="list-group">
 	<a href="/vote/{{ vote.name }}" class="list-group-item active">
 		<h4 class="list-group-item-heading">
 			{{ vote.name }}
 		</h4>
-		{{ moment(vote.timestamp).fromNow() }}&nbsp;by&nbsp;{{ vote.user.username }}
+		{{ moment(vote.timestamp).fromNow() }}&nbsp;by&nbsp;{{ vote.user.username }}&nbsp;共{{ total[vote.id] }}人投票
 	</a>
 	<a href="/vote/{{ vote.name }}" class="list-group-item">
 		<p class="list-group-item-text">
@@ -79,7 +77,7 @@
 		<div class="progress progress-striped active">
 	      <div class="progress-bar progress-bar-success" role="progressbar"
 		 aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
-		 style="width:{{ option.number }}%;">
+		 style="width:{{ option.number/total[vote.id]*100 }}%;">
 		    <span class="sr-only">40% 完成</span>
 	      </div>
         </div>

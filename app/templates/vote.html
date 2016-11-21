@@ -56,7 +56,7 @@
 	  {% for option in options %}
 	  {% if option.vote_id == vote.id %}
 	    <br>
-	  	<a href="{{ url_for('.success', op=option.id) }}" name="{{ option.id }}" type="button" class="list-group-item" type="submit">
+	  	<a href="{{ url_for('.success', op=option.id, voteid=option.vote_id) }}" name="{{ option.id }}" type="button" class="list-group-item" type="submit">
 	  		·{{ option.content }}&nbsp;{{ option.number }}票
 	  	</a>
 	  {% endif %}

@@ -44,8 +44,39 @@
 	<div class="col-md-8">
 	<div class="page-header">
 	    <h1 class="text-center">投票成功！</h1>
+        <p class="text-center">结果如下：</p>
     </div>
+      <div class="list-group-item active">
+        <h4 name="name" class="list-group-item-heading">
+            {{ vote.name }}
+        </h4>
+        {{ moment(vote.timestamp).fromNow() }}&nbsp;by&nbsp;{{ vote.user.username }}&nbsp;共{{ total }}人投票
+      </div>
+      <div class="list-group-item">
+        <p class="list-group-item-text">
+            描述：{{ vote.description }}
+        </p>
+      </div>
+      {% for option in options %}
+      {% if option.vote_id == vote.id %}
+      <div class="list-group-item">
+        <p class="list-group-item-text">
+            ·{{ option.content }}&nbsp;<span></span>{{ option.number+1 }}票
+        </p>
+        <div class="progress progress-striped active">
+          <div class="progress-bar progress-bar-success" role="progressbar"
+         aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+         style="width:{{ (option.number+1)/total*100 }}%;">
+            <span class="sr-only">40% 完成</span>
+          </div>
+        </div>
+       </div>
+      {% endif %}
+      {% endfor %}
     <a href="{{ url_for('.index') }}" type="button" class="btn btn-primary btn-lg btn-block">点击返回</a>
+    <br>
+    <br>
+    <br>
 	</div>
 	{% endblock %}
 </div>
