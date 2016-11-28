@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2016-11-18 11:07:10
 # @Last Modified by:   wsljc
-# @Last Modified time: 2016-11-21 21:58:29
+# @Last Modified time: 2016-11-28 23:07:45
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, request, flash
 
@@ -99,10 +99,38 @@ def success(op, voteid):
 		total += option.number
 	return render_template('success.html', vote=vote, m=m, options=options, total=total)
 
-@main.route('/secret')
+@main.route('/usercenter')
 @login_required
-def secret():
-	return '请登录！'
+def usercenter():
+	votes = Vote.query.filter_by(user_id=current_user.id).order_by(Vote.timestamp.desc()).all()
+	options = Option.query.all()
+	total = {}
+	n = 0
+	for vote in votes:
+		for option in vote.options:
+			n += option.number
+		total[vote.id] = n
+		n = 0
+	return render_template('usercenter.html', votes=votes, options=options, total=total)
+
+@main.route('/usercenter/<v>')
+@login_required
+def usercenter_(v):
+	vote = Vote.query.filter_by(id=v).first()
+	m = vote.id
+	db.session.execute('DELETE FROM options WHERE vote_id = %d' % m)
+	db.session.execute('DELETE FROM votes WHERE id = %d' % m)
+
+	votes = Vote.query.filter_by(user_id=current_user.id).order_by(Vote.timestamp.desc()).all()
+	options = Option.query.all()
+	total = {}
+	n = 0
+	for vote in votes:
+		for option in vote.options:
+			n += option.number
+		total[vote.id] = n
+		n = 0
+	return render_template('usercenter.html', votes=votes, options=options, total=total)
 
 @main.route('/logout')
 @login_required
