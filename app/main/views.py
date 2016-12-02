@@ -2,18 +2,19 @@
 # @Author: wsljc
 # @Date:   2016-11-18 11:07:10
 # @Last Modified by:   wsljc
-# @Last Modified time: 2016-11-28 23:07:45
+# @Last Modified time: 2016-12-02 19:39:53
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, request, flash
 
 from . import main
 from .forms import LoginForm, RegisterForm, NewForm
 from .. import db
-from ..models import Vote, User, Option
+from ..models import Vote, User, Option, Classification
 from flask_login import login_required, login_user, logout_user, current_user
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
+	classifications = Classification.query.all()
 	votes = Vote.query.order_by(Vote.timestamp.desc()).all()
 	options = Option.query.all()
 	total = {}
@@ -23,7 +24,22 @@ def index():
 			n += option.number
 		total[vote.id] = n
 		n = 0
-	return render_template('index.html', votes=votes, options=options, total=total)
+	return render_template('index.html', votes=votes, options=options, total=total, classifications=classifications)
+
+@main.route('/<classification>', methods=['GET', 'POST'])
+def index_(classification):
+	classifications = Classification.query.all()
+	i = Classification.query.filter_by(content=classification).first()
+	votes = Vote.query.filter_by(classification_id=i.id).order_by(Vote.timestamp.desc()).all()
+	options = Option.query.all()
+	total = {}
+	n = 0
+	for vote in votes:
+		for option in vote.options:
+			n += option.number
+		total[vote.id] = n
+		n = 0
+	return render_template('index.html', votes=votes, options=options, total=total, classifications=classifications)
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
@@ -54,6 +70,7 @@ def register():
 @login_required
 def new():
 	form = NewForm()
+	form.classification_id.choices = [(g.id, g.content) for g in Classification.query.order_by('id')]
 	i = 1
 	m = 0
 	for vote in Vote.query.all():
@@ -64,7 +81,8 @@ def new():
 		vote = Vote(
 			name=form.name.data, 
 			description=form.description.data, 
-			user=current_user._get_current_object()
+			user=current_user._get_current_object(), 
+			classification_id=form.classification_id.data
 			)
 		db.session.add(vote)
 		while request.form.get('option' + str(i)) is not None:
@@ -120,17 +138,7 @@ def usercenter_(v):
 	m = vote.id
 	db.session.execute('DELETE FROM options WHERE vote_id = %d' % m)
 	db.session.execute('DELETE FROM votes WHERE id = %d' % m)
-
-	votes = Vote.query.filter_by(user_id=current_user.id).order_by(Vote.timestamp.desc()).all()
-	options = Option.query.all()
-	total = {}
-	n = 0
-	for vote in votes:
-		for option in vote.options:
-			n += option.number
-		total[vote.id] = n
-		n = 0
-	return render_template('usercenter.html', votes=votes, options=options, total=total)
+	return redirect(url_for('.usercenter'))
 
 @main.route('/logout')
 @login_required

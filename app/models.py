@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2016-11-18 11:17:01
 # @Last Modified by:   wsljc
-# @Last Modified time: 2016-11-20 17:07:07
+# @Last Modified time: 2016-12-02 17:50:48
 from . import db
 from flask_login import UserMixin
 from . import login_manager
@@ -33,6 +33,7 @@ class Vote(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(64), unique=True, index=True, nullable=False)
 	description = db.Column(db.String(100))
+	classification_id = db.Column(db.Integer, db.ForeignKey('classifications.id'))
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 	options = db.relationship('Option', backref='vote')
@@ -43,6 +44,12 @@ class Option(db.Model):
 	content = db.Column(db.String(64), nullable=False)
 	number = db.Column(db.Integer, default=0)
 	vote_id = db.Column(db.Integer, db.ForeignKey('votes.id'))
+
+class Classification(db.Model):
+	__tablename__ = 'classifications'
+	id = db.Column(db.Integer, primary_key=True)
+	content = db.Column(db.String(64), default='未分类', nullable=False)
+	votes = db.relationship('Vote', backref='classification')
 
 @login_manager.user_loader
 def load_user(user_id):

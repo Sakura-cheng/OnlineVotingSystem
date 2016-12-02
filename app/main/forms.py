@@ -2,12 +2,12 @@
 # @Author: wsljc
 # @Date:   2016-11-18 11:14:22
 # @Last Modified by:   wsljc
-# @Last Modified time: 2016-11-20 09:55:00
+# @Last Modified time: 2016-12-02 18:00:03
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import Required, Length, Email, EqualTo, Regexp
 from wtforms import ValidationError
-from ..models import User, Vote, Option
+from ..models import User, Vote, Option, Classification
 
 class LoginForm(Form):
 	username = StringField('用户名：', validators=[Required()])
@@ -30,5 +30,7 @@ class RegisterForm(Form):
 class NewForm(Form):
 	name = StringField('主题：', validators=[Required()])
 	description = TextAreaField('主题描述：', validators=[Required(message='描述不能为空，若无请输入"无"')])
+	classification_id = SelectField('选择分类：', coerce=int)
 	option1 = StringField('选项：', validators=[Required()])
 	submit = SubmitField('创建投票')
+
