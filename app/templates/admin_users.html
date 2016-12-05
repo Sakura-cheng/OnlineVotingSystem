@@ -1,0 +1,68 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}在线投票系统{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">在线投票系统</a>
+    </div>
+    <ul class="nav navbar-nav navbar-left">
+    	<li><a href="/"><span class="glyphicon">首页</span></a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/admin"><span class="glyphicon  glyphicon glyphicon-chevron-left"></span>返回</a></li>
+    </ul>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+    	{{ message }}
+    </div>
+    {% endfor%}
+
+	{% block page_content %}
+	<div class="col-md-2"></div>
+	<div class="col-md-8">
+	<div class="page-header">
+		<h1>{{ current_user.username }}</h1>
+		<h3>用户管理</h3>
+	</div>
+	<br>
+	{% for user in users %}
+	<div class="list-group">
+	<div class="list-group-item">
+		<h4 class="list-group-item-heading">
+			{{ user.username }}
+		</h4>
+	</div>
+	<a href="{{ url_for('.admin_users_', v=user.id)}}"><button type="button" class="btn btn-primary">删除该用户及该用户下所有投票</button></a>
+    </div>
+	{% endfor %}
+	</div>
+	{% endblock %}
+</div>
+{% endblock %}
+
+<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js"></script>

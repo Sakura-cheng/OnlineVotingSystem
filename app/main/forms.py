@@ -2,7 +2,7 @@
 # @Author: wsljc
 # @Date:   2016-11-18 11:14:22
 # @Last Modified by:   wsljc
-# @Last Modified time: 2016-12-02 18:00:03
+# @Last Modified time: 2016-12-05 20:32:36
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import Required, Length, Email, EqualTo, Regexp
@@ -34,3 +34,6 @@ class NewForm(Form):
 	option1 = StringField('选项：', validators=[Required()])
 	submit = SubmitField('创建投票')
 
+class AddForm(Form):
+	name = StringField('分类名称：', validators=[Required()])
+	submit = SubmitField('添加分类')

@@ -15,29 +15,9 @@
     </div>
     <ul class="nav navbar-nav navbar-left">
     	<li><a href="/"><span class="glyphicon">首页</span></a></li>
-    	<li class="dropdown">
-    		<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-    			分类<span class="caret"></span>
-    		</a>
-    		<ul class="dropdown-menu">
-    			{% for classification in classifications %}
-    			<li><a href="{{ url_for('.index_', classification=classification.content) }}">{{ classification.content }}</a></li>
-    			{% endfor %}
-    		</ul>
-    	</li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-    {% if current_user.is_authenticated %}
-    {% if current_user.username == 'admin' %}
-    <li><a href="/admin"><span class="glyphicon glyphicon-user"></span>管理</a></li>
-    {% else %}
-    <li><a href="/usercenter"><span class="glyphicon glyphicon-user"></span>个人中心</a></li>
-    {% endif %}
-    <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span>退出</a></li>
-    {% else %}
-      <li><a href="/register"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
-      <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
-    {% endif %}
+      <li><a href="/admin"><span class="glyphicon  glyphicon glyphicon-chevron-left"></span>返回</a></li>
     </ul>
   </div>
 </nav>
@@ -65,27 +45,28 @@
 	{% block page_content %}
 	<div class="col-md-2"></div>
 	<div class="col-md-8">
-	<div>
-		<a href="/new"><button type="button" class="btn btn-primary">新建投票</button></a>
+	<div class="page-header">
+		<h1>{{ current_user.username }}</h1>
+		<h3>投票管理</h3>
 	</div>
 	<br>
 	{% for vote in votes %}
 	<div class="list-group">
-	<a href="/vote/{{ vote.name }}" class="list-group-item active">
+	<div class="list-group-item active">
 		<h4 class="list-group-item-heading">
 			{{ vote.name }}
 		</h4>
 		<p class="text-right">{{ vote.classification.content }}</p>
-		<span>{{ moment(vote.timestamp).fromNow() }}&nbsp;by&nbsp;{{ vote.user.username }}&nbsp;共{{ total[vote.id] }}人投票</span>
-	</a>
-	<a href="/vote/{{ vote.name }}" class="list-group-item">
+		{{ moment(vote.timestamp).fromNow() }}&nbsp;by&nbsp;{{ vote.user.username }}&nbsp;共{{ total[vote.id] }}人投票
+	</div>
+	<div class="list-group-item">
 		<p class="list-group-item-text">
 			描述：{{ vote.description }}
 		</p>
-	</a>
+	</div>
 	{% for option in options %}
 	{% if option.vote_id == vote.id %}
-	<a href="/vote/{{ vote.name }}" class="list-group-item">
+	<div class="list-group-item">
 		<p class="list-group-item-text">
 			·{{ option.content }}&nbsp;<span></span>{{ option.number }}票
 		</p>
@@ -106,9 +87,10 @@
           </div>
         </div>
         {% endif %}
-	</a>
+	</div>
 	{% endif %}
 	{% endfor %}
+	<a href="{{ url_for('.admin_votes_', v=vote.id)}}"><button type="button" class="btn btn-primary">删除该投票</button></a>
     </div>
 	{% endfor %}
 	</div>

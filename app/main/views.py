@@ -2,12 +2,12 @@
 # @Author: wsljc
 # @Date:   2016-11-18 11:07:10
 # @Last Modified by:   wsljc
-# @Last Modified time: 2016-12-02 19:39:53
+# @Last Modified time: 2016-12-05 22:23:28
 from datetime import datetime
 from flask import render_template, session, redirect, url_for, request, flash
 
 from . import main
-from .forms import LoginForm, RegisterForm, NewForm
+from .forms import LoginForm, RegisterForm, NewForm, AddForm
 from .. import db
 from ..models import Vote, User, Option, Classification
 from flask_login import login_required, login_user, logout_user, current_user
@@ -99,13 +99,13 @@ def new():
 		return redirect(url_for('.index'))
 	return render_template('new.html', form=form)
 
-@main.route('/vote/<votename>')
+@main.route('/vote/<votename>', methods=['GET', 'POST'])
 def vote(votename):
 	vote=Vote.query.filter_by(name=votename).first()
 	options = Option.query.filter_by(vote_id=vote.id).all()
 	return render_template('vote.html', vote=vote, options=options)
 
-@main.route('/success/option/<op>of<voteid>')
+@main.route('/success/option/<op>of<voteid>', methods=['GET', 'POST'])
 def success(op, voteid):
 	option=Option.query.filter_by(id=op).first()
 	m = option.id
@@ -117,7 +117,7 @@ def success(op, voteid):
 		total += option.number
 	return render_template('success.html', vote=vote, m=m, options=options, total=total)
 
-@main.route('/usercenter')
+@main.route('/usercenter', methods=['GET', 'POST'])
 @login_required
 def usercenter():
 	votes = Vote.query.filter_by(user_id=current_user.id).order_by(Vote.timestamp.desc()).all()
@@ -131,7 +131,7 @@ def usercenter():
 		n = 0
 	return render_template('usercenter.html', votes=votes, options=options, total=total)
 
-@main.route('/usercenter/<v>')
+@main.route('/usercenter/<v>', methods=['GET', 'POST'])
 @login_required
 def usercenter_(v):
 	vote = Vote.query.filter_by(id=v).first()
@@ -139,6 +139,85 @@ def usercenter_(v):
 	db.session.execute('DELETE FROM options WHERE vote_id = %d' % m)
 	db.session.execute('DELETE FROM votes WHERE id = %d' % m)
 	return redirect(url_for('.usercenter'))
+
+@main.route('/admin', methods=['GET', 'POST'])
+@login_required
+def admin():
+	return render_template('admin.html')
+
+@main.route('/admin/votes', methods=['GET', 'POST'])
+@login_required
+def admin_votes():
+	classifications = Classification.query.all()
+	votes = Vote.query.order_by(Vote.timestamp.desc()).all()
+	options = Option.query.all()
+	total = {}
+	n = 0
+	for vote in votes:
+		for option in vote.options:
+			n += option.number
+		total[vote.id] = n
+		n = 0
+	return render_template('admin_votes.html', votes=votes, options=options, total=total, classifications=classifications)
+
+@main.route('/admin/votes/<v>', methods=['GET', 'POST'])
+@login_required
+def admin_votes_(v):
+	vote = Vote.query.filter_by(id=v).first()
+	m = vote.id
+	db.session.execute('DELETE FROM options WHERE vote_id = %d' % m)
+	db.session.execute('DELETE FROM votes WHERE id = %d' % m)
+	return redirect(url_for('.admin_votes'))
+
+@main.route('/admin/users', methods=['GET', 'POST'])
+@login_required
+def admin_users():
+	users = User.query.filter(User.username!='admin').all()
+	return render_template('admin_users.html', users=users)
+
+@main.route('/admin/users/<v>', methods=['GET', 'POST'])
+@login_required
+def admin_users_(v):
+	user = User.query.filter_by(id=v).first()
+	m = user.id
+	votes = Vote.query.filter_by(user_id=m).all()
+	for vote in votes:
+		n = vote.id
+		db.session.execute('DELETE FROM options WHERE vote_id = %d' % n)
+	db.session.execute('DELETE FROM votes WHERE user_id = %d' % m)
+	db.session.execute('DELETE FROM users WHERE id = %d' % m)
+	return redirect(url_for('.admin_users'))
+
+@main.route('/admin/classifications', methods=['GET', 'POST'])
+@login_required
+def admin_classifications():
+	classifications = Classification.query.all()
+	return render_template('admin_classifications.html', classifications=classifications)
+
+@main.route('/admin/classifications_add', methods=['GET', 'POST'])
+@login_required
+def admin_classifications_add():
+	form = AddForm()
+	if form.validate_on_submit():
+		classification = Classification(
+			content=form.name.data
+			)
+		db.session.add(classification)
+		return redirect(url_for('.admin_classifications'))
+	return render_template('admin_classifications_add.html', form=form)
+
+@main.route('/admin/classifications/<v>', methods=['GET', 'POST'])
+@login_required
+def admin_classifications_(v):
+	classification = Classification.query.filter_by(id=v).first()
+	m = classification.id
+	votes = Vote.query.filter_by(classification_id=m).all()
+	for vote in votes:
+		n = vote.id
+		db.session.execute('DELETE FROM options WHERE vote_id = %d' % n)
+	db.session.execute('DELETE FROM votes WHERE classification_id = %d' % m)
+	db.session.execute('DELETE FROM classifications WHERE id = %d' % m)
+	return redirect(url_for('.admin_classifications'))
 
 @main.route('/logout')
 @login_required

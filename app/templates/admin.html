@@ -1,0 +1,64 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}在线投票系统{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">在线投票系统</a>
+    </div>
+    <ul class="nav navbar-nav navbar-left">
+    	<li><a href="/"><span class="glyphicon">首页</span></a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/"><span class="glyphicon  glyphicon glyphicon-chevron-left"></span>返回</a></li>
+    </ul>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+    	{{ message }}
+    </div>
+    {% endfor%}
+
+	{% block page_content %}
+	<div class="col-md-2"></div>
+	<div class="col-md-8">
+	<div class="page-header">
+		<h1>{{ current_user.username }}</h1>
+		<h3>管理</h3>
+		<br>
+		<div>
+		    <a href="/admin/users"><button id="users" type="button" class="btn btn-primary">用户管理</button></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		    <a href="/admin/votes"><button id="votes" type="button" class="btn btn-primary">投票管理</button></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		    <a href="/admin/classifications"><button id="classifications" type="button" class="btn btn-primary">分类管理</button></a>
+	    </div>
+	</div>
+	<br>
+	</div>
+	{% endblock %}
+</div>
+{% endblock %}
+
+<script src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js"></script>
