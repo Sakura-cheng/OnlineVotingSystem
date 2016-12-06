@@ -51,7 +51,7 @@
             {{ vote.name }}
         </h4>
         <p class="text-right">{{ vote.classification.content }}</p>
-        {{ moment(vote.timestamp).fromNow() }}&nbsp;by&nbsp;{{ vote.user.username }}&nbsp;共{{ total+1 }}人投票
+        {{ moment(vote.timestamp).fromNow() }}&nbsp;由&nbsp;{{ vote.user.username }}&nbsp;创建&nbsp;共{{ total+1 }}人投票
       </div>
       <div class="list-group-item">
         <p class="list-group-item-text">
